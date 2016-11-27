@@ -1,0 +1,69 @@
+# Import and Check the Structures
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+recent_grads = pd.read_csv('recent-grads.csv')
+print(recent_grads.iloc[0])
+print(recent_grads.head())
+print(recent_grads.tail())
+print(recent_grads.describe())
+
+raw_data_count = recent_grads.shape[0]
+cleaned_data_count = recent_grads.dropna(axis = 0).shape[0]
+print(raw_data_count, cleaned_data_count)
+
+# Scatter Plots
+fig = plt.figure(figsize = (20,20))
+ax1 = fig.add_subplot(2,3,1)
+ax2 = fig.add_subplot(2,3,2)
+ax3 = fig.add_subplot(2,3,3)
+ax4 = fig.add_subplot(2,3,4)
+ax5 = fig.add_subplot(2,3,5)
+ax6 = fig.add_subplot(2,3,6)
+
+ax1.scatter(recent_grads['Sample_size'], recent_grads['Median'])
+ax2.scatter(recent_grads['Sample_size'], recent_grads['Unemployment_rate'])
+ax3.scatter(recent_grads['Full_time'], recent_grads['Median'])
+ax4.scatter(recent_grads['ShareWomen'], recent_grads['Unemployment_rate'])
+ax5.scatter(recent_grads['Men'], recent_grads['Median'])
+ax6.scatter(recent_grads['Women'], recent_grads['Median'])
+
+plt.show()
+
+# Histograms
+recent_grads['Sample_size'].plot(kind = 'hist')
+plt.show()
+recent_grads['Median'].plot(kind = 'hist')
+plt.show()
+recent_grads['Employed'].plot(kind = 'hist')
+plt.show()
+recent_grads['Full_time'].plot(kind = 'hist')
+plt.show()
+recent_grads['ShareWomen'].plot(kind = 'hist')
+plt.show()
+recent_grads['Unemployment_rate'].plot(kind = 'hist')
+plt.show()
+recent_grads['Men'].plot(kind = 'hist')
+plt.show()
+recent_grads['Women'].plot(kind = 'hist')
+plt.show()
+
+# Scatter Matrix Plot
+from pandas.tools.plotting import scatter_matrix
+scatter_matrix(recent_grads[['Sample_size','Median']], figsize = (10,10))
+plt.show()
+scatter_matrix(recent_grads[['Sample_size', 'Median','Unemployment_rate']], figsize = (10,10))
+plt.show()
+
+# Bars
+lowest = recent_grads.sort_values('Total').iloc[:10]
+highest = recent_grads.sort_values('Total').iloc[-10:]
+lowest['ShareWomen'].plot(kind = 'bar')
+plt.show()
+highest['ShareWomen'].plot(kind = 'bar')
+plt.show()
+lowest['Unemployment_rate'].plot(kind = 'bar')
+plt.show()
+highest['Unemployment_rate'].plot(kind = 'bar')
+plt.show()
