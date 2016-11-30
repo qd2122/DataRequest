@@ -1,0 +1,48 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+import numpy as np
+import scipy.stats
+
+## Import and Get a sense of the dataset
+movies = pd.read_csv('fandango_score_comparison.csv')
+print(movies.head())
+
+## Histgrams
+plt.hist(movies['Fandango_Stars'])
+plt.show()
+plt.hist(movies['Metacritic_norm_round'])
+plt.show()
+
+## Statistics Calculation
+mean_f = np.mean(movies['Fandango_Stars'])
+mean_m = np.mean(movies['Metacritic_norm_round'])
+print(mean_f, mean_m)
+
+median_f = np.median(movies['Fandango_Stars'])
+median_m = np.median(movies['Metacritic_norm_round'])
+print(median_f, median_m)
+
+std_f = np.std(movies['Fandango_Stars'])
+std_m = np.std(movies['Metacritic_norm_round'])
+print(std_f, std_m)
+
+## Scatter Plot to see the difference
+plt.scatter(movies['Fandango_Stars'],movies['Metacritic_norm_round'])
+plt.show()
+
+movies['fm_diff'] = movies['Metacritic_norm_round'] - movies['Fandango_Stars']
+movies['fm_diff'] = np.abs(movies['fm_diff'])
+print((movies.sort_values(by = 'fm_diff', ascending=False).head(5)))
+
+## Correlations
+correlation = scipy.stats.pearsonr(movies['Fandango_Stars'],movies['Metacritic_norm_round'])
+print(correlation[0])
+stats = scipy.stats.linregress(movies['Metacritic_norm_round'],movies['Fandango_Stars'])
+print(stats[0] *3 + stats[1]) 
+
+## Finding residuals
+print(stats[0] *4 + stats[1])
+plt.scatter(movies['Metacritic_norm_round'],movies['Fandango_Stars'])
+plt.plot([1,5],[stats[0] *1 + stats[1],stats[0] *5 + stats[1]])
+plot.show()

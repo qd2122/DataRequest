@@ -1,0 +1,52 @@
+## import and get rid of the missing values
+import pandas as pd
+board_games = pd.read_csv('board_games.csv')
+print(board_games.head())
+board_games = board_games.dropna(axis = 0)
+board_games = board_games[board_games['users_rated'] != 0]
+
+## plot the histogram of mean and standard deviation of average_rating
+import matplotlib.pyplot as plt
+% matplotlib inline
+plt.hist(board_games['average_rating'])
+
+
+import numpy
+print(numpy.std(board_games['average_rating']))
+print(numpy.mean(board_games['average_rating']))
+
+## Use K-means to cluster the games
+import sklearn
+from sklearn.cluster import KMeans
+model = KMeans(n_clusters = 5, random_state = 7)
+numeric_columns = board_games.iloc[:,3:].dropna(axis=0)
+model.fit(numeric_columns)
+labels = model.labels_
+
+game_mean = numeric_columns.apply(numpy.mean, axis = 1)
+game_std = numeric_columns.apply(numpy.std, axis = 1)
+plt.scatter(game_mean, game_std, c = labels)
+plt.show()
+%matplotlib inline
+
+## Calculate the correlation to figure out what to include in Linear Regression
+correlations = numeric_columns.corr()
+print(correlations['average_rating'])
+
+## Build Linear Regression model and compare MSE with Standard Deviation
+board_games = board_games.dropna(axis = 0)
+cols = list(board_games.columns)
+cols.remove('bayes_average_rating')
+cols.remove('average_rating')
+cols.remove("name")
+cols.remove("id")
+cols.remove("type")
+
+from sklearn.linear_model import LinearRegression
+lr = LinearRegression()
+lr.fit(board_games[cols], board_games['average_rating'])
+predictions = lr.predict(board_games[cols])
+
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(predictions, board_games['average_rating'])
+mse
